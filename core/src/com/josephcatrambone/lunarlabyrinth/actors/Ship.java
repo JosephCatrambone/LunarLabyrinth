@@ -10,25 +10,25 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.Align;
 import com.josephcatrambone.lunarlabyrinth.MainGDXGame;
 
 /**
  * Created by josephcatrambone on 2016/04/01.
  */
 public class Ship extends Pawn {
+	final static float SHIP_MASS = 10f;
 	float fuel;
 	float thrust;
 
 	public Ship(int x, int y, float fuel, float thrust) {
-		super();
+		super(x, y, SHIP_MASS);
 		this.fuel = fuel;
 		this.thrust = thrust;
 		this.spriteSheet = MainGDXGame.assetManager.get("ship.png", Texture.class);
-		this.animations[0] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 0, 0, 4, 4)});
-		this.animations[1] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 0, 0, 4, 4)});
-		this.animations[2] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 0, 0, 4, 4)});
-		this.animations[3] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 0, 0, 4, 4)});
-		this.animations[4] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 0, 0, 4, 4)});
+		for(int i=0; i < Direction.NUM_DIRECTIONS.ordinal(); i++) {
+			this.animations[i] = new Animation(1.0f, new TextureRegion[]{new TextureRegion(spriteSheet, 4, 4)});
+		}
 
 		/*
 		final Ship ref = this;

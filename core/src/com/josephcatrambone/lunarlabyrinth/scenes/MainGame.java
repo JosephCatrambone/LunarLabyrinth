@@ -24,13 +24,17 @@ public class MainGame extends Scene {
 	@Override
 	public void create() {
 		stage = new Stage(new FitViewport(640, 640));
-		stage.getViewport().update(64, 64, true);
 		camera = (OrthographicCamera)stage.getCamera();
-		camera.translate(0, 0, -1);
+		camera.setToOrtho(false, 64, 64);
 		Gdx.input.setInputProcessor(stage);
 
-		player = new Ship(10, 10, 100, 2.0f);
+		// Place the player in some position.
+		player = new Ship(10, 10, 1000, 15000f);
 		stage.addActor(player);
+
+		// Create a new goal.
+		goal = new WormHole(1, 1, 10);
+
 	}
 
 	@Override
@@ -52,7 +56,6 @@ public class MainGame extends Scene {
 		handleInput();
 
 		// Update ship positions.
-		camera.update(true);
 		stage.act();
 
 		// Recalculate forces.

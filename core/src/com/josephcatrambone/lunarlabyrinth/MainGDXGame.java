@@ -32,6 +32,7 @@ public class MainGDXGame extends ApplicationAdapter {
 
 		// Preload all assets.
 		MainGDXGame.assetManager.load("badlogic.jpg", Texture.class);
+		MainGDXGame.assetManager.load("star.png", Texture.class);
 		MainGDXGame.assetManager.load("ship.png", Texture.class);
 		MainGDXGame.assetManager.finishLoading();
 

@@ -23,17 +23,18 @@ public class Pawn extends Actor {
 	public Vector2 acceleration;
 	public float mass;
 
-	public Pawn() {
+	public Pawn(float x, float y, float mass) {
+		this.setPosition(x, y, Align.center);
+		this.mass = mass;
 		this.direction = Direction.NONE;
 		this.animations = new Animation[Direction.NUM_DIRECTIONS.ordinal()];
 		this.velocity = new Vector2();
 		this.acceleration = new Vector2();
-		mass = 1.0f;
 	}
 
 	@Override
 	public void draw(Batch spriteBatch, float alpha) {
-		spriteBatch.draw(animations[direction.ordinal()].getKeyFrame(stateTime), getX(), getY());
+		spriteBatch.draw(animations[direction.ordinal()].getKeyFrame(stateTime), Math.round(getX()), Math.round(getY()));
 	}
 
 	@Override
