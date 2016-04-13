@@ -27,11 +27,14 @@ public class MainGDXGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		Gdx.graphics.setWindowedMode(640, 640);
+
 		// Can't init user data in static.
 		MainGDXGame.userData = Gdx.app.getPreferences("lunarlabyrinth_userdata");
 
 		// Preload all assets.
 		MainGDXGame.assetManager.load("badlogic.jpg", Texture.class);
+		MainGDXGame.assetManager.load("wormhole.png", Texture.class);
 		MainGDXGame.assetManager.load("star.png", Texture.class);
 		MainGDXGame.assetManager.load("ship.png", Texture.class);
 		MainGDXGame.assetManager.finishLoading();

@@ -25,6 +25,9 @@ public class MainGame extends Scene {
 	final float MAX_SOLAR_MASS = 2e12f;
 	final float GRAVITATIONAL_CONSTANT = 6.674e-11f;
 	final float PLAYER_START_FUEL = 100;
+	final float PLAYER_SHIP_THRUST = 1000f; // 500 is hard but doable. You have to really rely on grav swing.
+	final float MIN_DIST_TO_SPAWN_EXIT = 16*16; // If the player is dead center, that means we have 32 pixels in one direction.
+	final float MIN_DIST_TO_EXIT = 16;
 
 	Stage stage;
 	OrthographicCamera camera;
@@ -41,15 +44,16 @@ public class MainGame extends Scene {
 		random = new Random();
 		stage = new Stage(new FitViewport(640, 640));
 		camera = (OrthographicCamera)stage.getCamera();
-		camera.setToOrtho(false, MAP_WIDTH, MAP_WIDTH);
+		camera.setToOrtho(false, MAP_WIDTH, MAP_HEIGHT);
 		Gdx.input.setInputProcessor(stage);
 
-		// Place the player in some position.
-		player = new Ship(10, 10, 1000, 15000f);
+		// Place the player in some position around 1/3rd the way down the screen.
+		player = new Ship(MAP_WIDTH/2, MAP_HEIGHT/3, PLAYER_START_FUEL, PLAYER_SHIP_THRUST);
 		stage.addActor(player);
 
-		//goal = new WormHole(0, 0, 0);
-		//stage.addActor(goal);
+		// Start the goal 2/3rds down.
+		goal = new WormHole(MAP_WIDTH/2, 2*(MAP_HEIGHT/3), 0);
+		stage.addActor(goal);
 
 		stars = new Star[MAX_STARS];
 		for(int i=0; i < MAX_STARS; i++) {
@@ -71,10 +75,12 @@ public class MainGame extends Scene {
 
 		// Refill the player's fuel and cancel their inertia.
 		player.velocity.set(0, 0);
-
+		player.setFuel(PLAYER_START_FUEL);
 
 		// Create a new goal.
-		//goal.setPosition();
+		do {
+			goal.setPosition(random.nextInt(MAP_WIDTH), random.nextInt(MAP_HEIGHT));
+		} while(Math.pow(player.getX()-goal.getX(), 2) + Math.pow(player.getY()-goal.getY(), 2) < MIN_DIST_TO_SPAWN_EXIT);
 
 		// Move around the stars and, if the level is right, add more.
 		for(int i=0; i < numStarsFromLevel(currentLevel); i++) {
@@ -126,9 +132,21 @@ public class MainGame extends Scene {
 		}
 
 		// Distance to goal.
+		float distToGoal = new Vector2(player.getX() - goal.getX(), player.getY() - goal.getY()).dst2(0, 0);
+		if(distToGoal < MIN_DIST_TO_EXIT) {
+			currentLevel++;
+			generateNewLevel();
+		}
 
 		// Check success or failure.
 		System.out.println("Distance to nearest star: " + distanceToNearestStar);
+
+		// Cap player pos to edge of screen.
+		player.setX(Math.max(player.getWidth(), player.getX()));
+		player.setX(Math.min(player.getX(), MAP_WIDTH-player.getWidth()-1));
+		player.setY(Math.max(player.getHeight(), player.getY()));
+		player.setY(Math.min(player.getY(), MAP_HEIGHT-player.getHeight()-1));
+		System.out.println("Player X:" + player.getX());
 	}
 
 	void handleInput() {
