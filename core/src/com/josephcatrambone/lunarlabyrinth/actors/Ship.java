@@ -73,26 +73,39 @@ public class Ship extends Pawn {
 	@Override
 	public void act(float dt) {
 		super.act(dt);
-		System.out.println("Position: " + getX() + " " + getY());
-		float jerk = thrust/(mass+fuel);
-		switch(direction) {
-			case RIGHT:
-				this.velocity.x += jerk*dt;
-				break;
-			case UP:
-				this.velocity.y += jerk*dt;
-				break;
-			case LEFT:
-				this.velocity.x -= jerk*dt;
-				break;
-			case DOWN:
-				this.velocity.y -= jerk*dt;
-				break;
-			case NONE:
-			default:
-				break;
+		if(fuel > 0) {
+			float jerk = thrust / getEffectiveMass();
+			fuel -= dt;
+			switch (direction) {
+				case RIGHT:
+					this.velocity.x += jerk * dt;
+					thrust -= dt;
+					break;
+				case UP:
+					this.velocity.y += jerk * dt;
+					thrust -= dt;
+					break;
+				case LEFT:
+					this.velocity.x -= jerk * dt;
+					thrust -= dt;
+					break;
+				case DOWN:
+					this.velocity.y -= jerk * dt;
+					thrust -= dt;
+					break;
+				case NONE:
+				default:
+					break;
+			}
 		}
 		stateTime = (stateTime + dt) % MAX_STATE_TIME;
 	}
 
+	public float getEffectiveMass() {
+		return 1.0e-6f + mass+fuel; // Prevent divide by zero.
+	}
+
+	public void setFuel(float newFuel) {
+		this.fuel = newFuel;
+	}
 }
